@@ -14,11 +14,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import app.thebitsolutions.filedownloader.databinding.ActivityMainBinding
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 200
     private lateinit var binding: ActivityMainBinding
     private val downloadedvideo: MutableList<String> = mutableListOf()
+    private val olddvideo: MutableList<VideoModel> = mutableListOf()
+    private val newvideo: MutableList<VideoModel> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
@@ -26,6 +29,11 @@ class MainActivity : AppCompatActivity() {
 
         val array: ArrayList<String> = ArrayList<String>()
 
+
+        newvideo.add(VideoModel("http://143.244.136.168/data/upload/f86256e1-62cc-405b-a709-569c6a76a66faa.mp4"))
+        newvideo.add(VideoModel("http://143.244.136.168/data/upload/e0c19c87-46d0-4a1c-9392-9da6f589ffdb.mp4"))
+        newvideo.add(VideoModel("http://143.244.136.168/data/upload/c33050e4-d2eb-4e70-b3b0-f3a56a1bf16e.mp4"))
+        newvideo.add(VideoModel("http://143.244.136.168/data/upload/3c299bdc-94ba-4e80-a523-b2ce2df7d3e9.mp4"))
 
         array.add("http://143.244.136.168/data/upload/f86256e1-62cc-405b-a709-569c6a76a66f.mp4")
         array.add("http://143.244.136.168/data/upload/e0c19c87-46d0-4a1c-9392-9da6f589ffdb.mp4")
@@ -54,33 +62,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.comare.setOnClickListener {
-            val downloadedvidoes: ArrayList<String> = ArrayList<String>(GetDownloadedVideo())
-            val newvidoes: ArrayList<String> = ArrayList<String>(array)
+            val downloadedvidoes: ArrayList<VideoModel> = ArrayList<VideoModel>(GetDownloadedVideo())
+            val newvidoes: ArrayList<VideoModel> = ArrayList<VideoModel>(newvideo)
             if(downloadedvidoes.size>0){
-
-                for(i in 0 until downloadedvidoes.size){
+                for(info in downloadedvidoes){
                     var found = false
-                    for(j in 0 until newvidoes.size){
-                        if(j.equals(i)){
+                    for (info2 in newvidoes){
+                        if(info.name.split("/").last().equals(info2.name.split("/").last())){
                             found=true
-                            Log.e("File","Not Deleted")
+                            Log.e("File","Same")
                         }
                     }
                     if(!found){
                         Log.e("File","Deleted")
+                        DeleteFile(info.name)
                     }
                 }
             }
-           /* val newfile: ArrayList<String> = ArrayList<String>()
-            for (i in 0 until array.size){
-                newfile.add(array.get(i).split("/").last())
-            }
-            val oldfile: ArrayList<String> = ArrayList<String>()
-            for (i in 0 until downloadedvideo.size){
-                oldfile.add(downloadedvideo.get(i).split("/").last())
-            }
-            getDistinctStudents(newfile, oldfile)*/
-
         }
     }
 
@@ -202,6 +200,36 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun DeleteFile(filename:String){
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) ,"/" + filename)
+        if(file.exists()){
+            file.delete()
+        }
+    }
+        fun GetDownloadedVideo(): MutableList<VideoModel> {
+            val downloadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if(olddvideo.size>0){
+                olddvideo.clear()
+            }
+            val pattern = ".mp4"
+            val listFile = downloadPath.listFiles()
+            if (listFile != null) {
+                for (i in listFile.indices) {
+                    val x = i
+                    if (listFile[i].isDirectory) {
+                        //walkdir(listFile[i])
+                    } else {
+                        if (listFile[i].name.endsWith(pattern)) {
+                            // Do what ever u want, add the path of the video to the list
+                            olddvideo!!.add(VideoModel(listFile[i].toString()))
+                        }
+                    }
+                }
+                Log.e("VIDEO",olddvideo!!.size.toString())
+            }
+            return olddvideo
+        }
+/*
         fun GetDownloadedVideo(): MutableList<String> {
             val downloadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             if(downloadedvideo.size>0){
@@ -225,5 +253,6 @@ class MainActivity : AppCompatActivity() {
             }
             return downloadedvideo
         }
+*/
 
 }

@@ -1,19 +1,10 @@
 package app.thebitsolutions.filedownloader;
 
 public class VideoModel {
-    private String Title,Name;
+    private String Name;
 
-    public VideoModel(String title, String name) {
-        Title = title;
+    public VideoModel(String name) {
         Name = name;
-    }
-
-    public String getTitle() {
-        return Title;
-    }
-
-    public void setTitle(String title) {
-        Title = title;
     }
 
     public String getName() {
