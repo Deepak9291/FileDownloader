@@ -29,6 +29,11 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="GetList"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/comare"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="COMPARE"/>
 
     </LinearLayout>
 </layout>
